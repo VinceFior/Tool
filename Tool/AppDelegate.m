@@ -7,19 +7,31 @@
 //
 
 #import "AppDelegate.h"
+#import "TextInputWindowController.h"
 
 @interface AppDelegate ()
+
+@property (strong, nonatomic) NSStatusItem *statusItem;
+@property (strong, nonatomic) TextInputWindowController *controllerWindow;
 
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
+    // set up status item (icon)
+    self.statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    _statusItem.image = [NSImage imageNamed:@"GearIcon"];
+    [_statusItem setAction:@selector(itemClicked:)];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
+}
+
+- (void)itemClicked:(id)sender {
+    self.controllerWindow = [[TextInputWindowController alloc] initWithWindowNibName:@"TextInputWindowController"];
+    [self.controllerWindow showWindow:self];
 }
 
 @end

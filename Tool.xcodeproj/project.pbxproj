@@ -13,6 +13,11 @@
 		BF0FF2601B06FA710073C05D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF0FF25F1B06FA710073C05D /* Images.xcassets */; };
 		BF0FF2631B06FA710073C05D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF0FF2611B06FA710073C05D /* Main.storyboard */; };
 		BF0FF26F1B06FA710073C05D /* ToolTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF26E1B06FA710073C05D /* ToolTests.m */; };
+		BF0FF27D1B06FE550073C05D /* TextInputWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF27B1B06FE550073C05D /* TextInputWindowController.m */; };
+		BF0FF27E1B06FE550073C05D /* TextInputWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF0FF27C1B06FE550073C05D /* TextInputWindowController.xib */; };
+		BF0FF2811B071BB90073C05D /* ReactionImageList.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2801B071BB90073C05D /* ReactionImageList.m */; };
+		BF0FF2841B071BC50073C05D /* ReactionImage.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2831B071BC50073C05D /* ReactionImage.m */; };
+		BF0FF2871B072FFD0073C05D /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2861B072FFD0073C05D /* FileManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +43,15 @@
 		BF0FF2681B06FA710073C05D /* ToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0FF26D1B06FA710073C05D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF0FF26E1B06FA710073C05D /* ToolTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ToolTests.m; sourceTree = "<group>"; };
+		BF0FF27A1B06FE550073C05D /* TextInputWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextInputWindowController.h; sourceTree = "<group>"; };
+		BF0FF27B1B06FE550073C05D /* TextInputWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextInputWindowController.m; sourceTree = "<group>"; };
+		BF0FF27C1B06FE550073C05D /* TextInputWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextInputWindowController.xib; sourceTree = "<group>"; };
+		BF0FF27F1B071BB90073C05D /* ReactionImageList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactionImageList.h; sourceTree = "<group>"; };
+		BF0FF2801B071BB90073C05D /* ReactionImageList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactionImageList.m; sourceTree = "<group>"; };
+		BF0FF2821B071BC50073C05D /* ReactionImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReactionImage.h; sourceTree = "<group>"; };
+		BF0FF2831B071BC50073C05D /* ReactionImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactionImage.m; sourceTree = "<group>"; };
+		BF0FF2851B072FFD0073C05D /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
+		BF0FF2861B072FFD0073C05D /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,8 +95,17 @@
 			children = (
 				BF0FF2571B06FA710073C05D /* AppDelegate.h */,
 				BF0FF2581B06FA710073C05D /* AppDelegate.m */,
+				BF0FF2851B072FFD0073C05D /* FileManager.h */,
+				BF0FF2861B072FFD0073C05D /* FileManager.m */,
 				BF0FF25C1B06FA710073C05D /* ViewController.h */,
 				BF0FF25D1B06FA710073C05D /* ViewController.m */,
+				BF0FF27A1B06FE550073C05D /* TextInputWindowController.h */,
+				BF0FF27B1B06FE550073C05D /* TextInputWindowController.m */,
+				BF0FF27C1B06FE550073C05D /* TextInputWindowController.xib */,
+				BF0FF2821B071BC50073C05D /* ReactionImage.h */,
+				BF0FF2831B071BC50073C05D /* ReactionImage.m */,
+				BF0FF27F1B071BB90073C05D /* ReactionImageList.h */,
+				BF0FF2801B071BB90073C05D /* ReactionImageList.m */,
 				BF0FF25F1B06FA710073C05D /* Images.xcassets */,
 				BF0FF2611B06FA710073C05D /* Main.storyboard */,
 				BF0FF2551B06FA710073C05D /* Supporting Files */,
@@ -197,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF0FF2601B06FA710073C05D /* Images.xcassets in Resources */,
+				BF0FF27E1B06FE550073C05D /* TextInputWindowController.xib in Resources */,
 				BF0FF2631B06FA710073C05D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,9 +239,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF0FF2841B071BC50073C05D /* ReactionImage.m in Sources */,
+				BF0FF2811B071BB90073C05D /* ReactionImageList.m in Sources */,
 				BF0FF25E1B06FA710073C05D /* ViewController.m in Sources */,
 				BF0FF25B1B06FA710073C05D /* main.m in Sources */,
 				BF0FF2591B06FA710073C05D /* AppDelegate.m in Sources */,
+				BF0FF2871B072FFD0073C05D /* FileManager.m in Sources */,
+				BF0FF27D1B06FE550073C05D /* TextInputWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
