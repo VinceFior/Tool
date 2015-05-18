@@ -40,6 +40,8 @@
             [helpMessage appendString:[NSString stringWithFormat:@"\n\"gif <keyword>\" to copy the URL of a reaction image, like \"gif nope\""]];
             [helpMessage appendString:[NSString stringWithFormat:@"\n\"list gif\" to list all reaction images"]];
             [self printMessage:helpMessage];
+        } else {
+            [self printMessage:[NSString stringWithFormat:@"I don\'t know how to process search string \"%@\".", searchString]];
         }
     } else if ([searchStringTerms count] == 2) {
         NSString *command = searchStringTerms[0];
@@ -66,6 +68,10 @@
         if (bestImage != NULL) {
             [self printMessage:[NSString stringWithFormat:@"Found image entitled \"%@\". Copying its URL to clipboard..", bestImage.title]];
             [self copyToClipboard:bestImage.url];
+            // now that we've served our purpose, close the window and restore focus
+            [self close];
+            AppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+            [appDelegate restorePreviousApplication];
         } else {
             NSLog(@"Could not find image.");
         }

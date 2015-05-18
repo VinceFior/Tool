@@ -48,15 +48,19 @@
         NSArray* data = [line componentsSeparatedByString:@","];
         NSString *url = data[0];
         NSString *imageType = data[1];
-        BOOL animated = false;
-        if ([imageType isEqualToString:@"animated"]) {
-            animated = true;
+        ReactionImageType reactionImageType = ReactionImageTypeOther;
+        if ([imageType isEqualToString:@"static"]) {
+            reactionImageType = ReactionImageTypeStatic;
+        } else if ([imageType isEqualToString:@"animated"]) {
+            reactionImageType = ReactionImageTypeAnimated;
+        } else if ([imageType isEqualToString:@"youtube"]) {
+            reactionImageType = ReactionImageTypeYouTube;
         }
         NSString *title = data[2];
         ReactionImage *reactionImage = [[ReactionImage alloc] init];
         reactionImage.url = url;
         reactionImage.title = title;
-        reactionImage.animated = animated;
+        reactionImage.imageType = reactionImageType;
         [images addObject:reactionImage];
     }
     
