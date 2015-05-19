@@ -19,6 +19,7 @@
 		BF0FF2811B071BB90073C05D /* ReactionImageList.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2801B071BB90073C05D /* ReactionImageList.m */; };
 		BF0FF2841B071BC50073C05D /* ReactionImage.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2831B071BC50073C05D /* ReactionImage.m */; };
 		BF0FF2871B072FFD0073C05D /* FileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0FF2861B072FFD0073C05D /* FileManager.m */; };
+		BFDDA19A1B0BD89400678CA9 /* CentralTools.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA1991B0BD89400678CA9 /* CentralTools.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,8 @@
 		BF0FF2831B071BC50073C05D /* ReactionImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactionImage.m; sourceTree = "<group>"; };
 		BF0FF2851B072FFD0073C05D /* FileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManager.h; sourceTree = "<group>"; };
 		BF0FF2861B072FFD0073C05D /* FileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManager.m; sourceTree = "<group>"; };
+		BFDDA1981B0BD89400678CA9 /* CentralTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CentralTools.h; sourceTree = "<group>"; };
+		BFDDA1991B0BD89400678CA9 /* CentralTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CentralTools.m; sourceTree = "<group>"; };
 		E9B3154FC6D8FF8BAB4B89D0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,6 +122,8 @@
 			children = (
 				BF0FF2571B06FA710073C05D /* AppDelegate.h */,
 				BF0FF2581B06FA710073C05D /* AppDelegate.m */,
+				BFDDA1981B0BD89400678CA9 /* CentralTools.h */,
+				BFDDA1991B0BD89400678CA9 /* CentralTools.m */,
 				BF0FF2851B072FFD0073C05D /* FileManager.h */,
 				BF0FF2861B072FFD0073C05D /* FileManager.m */,
 				BF0FF25C1B06FA710073C05D /* ViewController.h */,
@@ -301,6 +306,7 @@
 				BF0FF2841B071BC50073C05D /* ReactionImage.m in Sources */,
 				BF0FF2811B071BB90073C05D /* ReactionImageList.m in Sources */,
 				BF0FF25E1B06FA710073C05D /* ViewController.m in Sources */,
+				BFDDA19A1B0BD89400678CA9 /* CentralTools.m in Sources */,
 				BF0FF25B1B06FA710073C05D /* main.m in Sources */,
 				BF0FF2591B06FA710073C05D /* AppDelegate.m in Sources */,
 				BF0FF2871B072FFD0073C05D /* FileManager.m in Sources */,
