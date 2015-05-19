@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "TextInputWindowController.h"
 #include <Carbon/Carbon.h> // for key codes
+#import "AFNetworking.h"
 
 @interface AppDelegate ()
 
@@ -37,6 +38,15 @@
     
     [self setUpShortcuts];
     
+//    Example http request:
+//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+//    [manager GET:@"http://www.example.com/" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+//        NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+//        NSLog(@"Success: %@", string);
+//     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+//         NSLog(@"Failure: %@", error);
+//     }];
 }
 
 - (void)setUpShortcuts {
