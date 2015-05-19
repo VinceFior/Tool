@@ -8,12 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+#import "ImgurSession.h"
+
+@interface AppDelegate : NSObject <NSApplicationDelegate,IMGSessionDelegate>
 
 @property (strong, nonatomic) NSEvent *localEventMonitor;
 @property (strong, nonatomic) NSEvent *globalEventMonitor;
 @property (nonatomic) BOOL isSearchWindowOpen;
 @property (strong, nonatomic) NSRunningApplication *previousApplication;
+
+@property (copy) void(^continueHandler)();
 
 - (void) restorePreviousApplication;
 

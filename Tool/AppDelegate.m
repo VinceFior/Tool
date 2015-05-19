@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "TextInputWindowController.h"
 #include <Carbon/Carbon.h> // for key codes
-#import "AFNetworking.h"
 
 @interface AppDelegate ()
 
@@ -37,17 +36,35 @@
     [_statusItem setAction:@selector(itemClicked:)];
     
     [self setUpShortcuts];
+
     
-//    Example http request:
-//    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-//    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-//    [manager GET:@"http://www.example.com/" parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-//        NSString *string = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-//        NSLog(@"Success: %@", string);
-//     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-//         NSLog(@"Failure: %@", error);
-//     }];
+    
+    
+    [IMGSession anonymousSessionWithClientID:@"anonToken" withDelegate:self];
+    [IMGGalleryRequest hotGalleryPage:0 success:^(NSArray *objects) {
+        NSLog(@"Yay");
+        //use gallery objects in a table for example
+        1;
+    } failure:^(NSError *error) {
+        NSLog(@"No: %@", error);
+        //handle error
+    }];
+
 }
+
+
+
+-(void)imgurSessionNeedsExternalWebview:(NSURL *)url completion:(void (^)())completion{
+    
+    self.continueHandler = [completion copy];
+    NSLog(@"do session thing..");
+    //go to safari to login, configure your imgur app to redirect to this app using URL scheme.
+//    [self openURL:url];
+    
+}
+
+
+
 
 - (void)setUpShortcuts {
     // TODO: use CGEventTapCreate() to block the event from other applications.
