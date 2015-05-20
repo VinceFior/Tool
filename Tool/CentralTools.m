@@ -24,7 +24,20 @@
     [[NSPasteboard generalPasteboard] setString:text forType:NSStringPboardType];
 }
 
++ (void)printHelpMessage {
+    NSMutableString *helpMessage = [NSMutableString stringWithFormat:@"Commands:" ];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"gif <keyword>\" to copy the URL of a reaction image, like \"gif nope\""]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"list gif\" to list all reaction images"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"getalbum <album ID>\" to generate a list of reaction images for the given album"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"dict <word>\" to open Dictionary.com to the given word"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"xkcd <keyword>\" to open the first xkcd.com result for the given keyword"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"music <keyword>\" to open the first matching video on my YouTube \'Music\' playlist"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"youtube <keyword>\" to search YouTube for the given keyword"]];
+    [CentralTools printMessage:helpMessage];
+}
+
 + (BOOL)runCommand:(NSString *)command withKeyword:(NSString *)keyword {
+    
     if ([command isEqualToString:@"gif"]) {
         
         FileManager *fileManager = [FileManager sharedManager];
@@ -50,9 +63,9 @@
         
     } else if ([command isEqualToString:@"getalbum"]) {
         
+        [CentralTools printMessage:[NSString stringWithFormat:@"Getting album with ID %@..", keyword]];
         ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
         [imgurDelegate storeAlbumWithID:keyword];
-        [CentralTools printMessage:[NSString stringWithFormat:@"Getting album with ID %@..", keyword]];
         
     } else if ([command isEqualToString:@"dict"]) {
         
@@ -62,13 +75,19 @@
     } else if ([command isEqualToString:@"xkcd"]) {
         
         // Google the keyword under "site:xkcd.com" with 'I'm feeling lucky' (first result)
-        [CentralTools openUrlWithString:[NSString stringWithFormat:@"http://www.google.com/webhp?#q=%@+site:xkcd.com&btnI=I", keyword]];
+        [CentralTools openUrlWithString:[NSString stringWithFormat:@"http://www.google.com/webhp?gws_rd=ssl#q=%@+site:xkcd.com&btnI=I", keyword]];
         
     } else if ([command isEqualToString:@"music"]) {
         
+        [CentralTools printMessage:[NSString stringWithFormat:@"Searching YouTube playlist for \"%@\".", keyword]];
         NSString *playlistID = @"PL2RjSZTkAtlM1UiG59LRGWtD2s6IDOEXS"; // Vincent's music playlist
         [CentralTools getYoutubeMusicVideoForPlaylist:playlistID atIndex:1 withKeyword:keyword];
         
+    } else if ([command isEqualToString:@"youtube"]) {
+        
+        NSString *searchURL = [NSString stringWithFormat:@"https://www.youtube.com/results?search_query=%@", keyword];
+        [CentralTools openUrlWithString:searchURL];
+    
     } else {
         [CentralTools printMessage:[NSString stringWithFormat:@"Could not find command \"%@\", which was given with keyword \"%@\".",
                             command, keyword]];
@@ -135,6 +154,11 @@
                 NSString *failureMessage = [NSString stringWithFormat:@"Could not find video with keyword \"%@\" in playlist with ID \"%@\".",
                                             keyword, playlistID];
                 [CentralTools printMessage:failureMessage];
+                
+                // fall back on searching for the keyword (with "song") on YouTube
+                [CentralTools printMessage:[NSString stringWithFormat:@"Falling back by searching YouTube for \"%@\".", keyword]];
+                NSString *searchURL = [NSString stringWithFormat:@"https://www.youtube.com/results?search_query=%@", keyword];
+                [CentralTools openUrlWithString:searchURL];
             }
             
         }
@@ -161,6 +185,8 @@
 }
 
 + (void)openUrlWithString:(NSString *)urlString {
+    // replace spaces with '+'
+    urlString = [urlString stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     NSURL *url = [NSURL URLWithString:urlString];
     if (![[NSWorkspace sharedWorkspace] openURL:url]) {
         [CentralTools printMessage:[NSString stringWithFormat:@"Failed to open URL \"%@\".", [url description]]];

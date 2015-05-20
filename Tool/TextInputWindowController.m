@@ -29,10 +29,7 @@
         if ([searchString length] == 0) {
             // this case happens when the search field is modified to be empty (for some reason)
         } else if ([searchString isEqualToString:@"help"]) {
-            NSMutableString *helpMessage = [NSMutableString stringWithFormat:@"Commands:" ];
-            [helpMessage appendString:[NSString stringWithFormat:@"\n\"gif <keyword>\" to copy the URL of a reaction image, like \"gif nope\""]];
-            [helpMessage appendString:[NSString stringWithFormat:@"\n\"list gif\" to list all reaction images"]];
-            [CentralTools printMessage:helpMessage];
+            [CentralTools printHelpMessage];
         } else {
             [CentralTools printMessage:[NSString stringWithFormat:@"I don\'t know how to process search string \"%@\".", searchString]];
         }
