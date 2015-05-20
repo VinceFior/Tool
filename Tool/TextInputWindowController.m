@@ -45,6 +45,7 @@
         BOOL shouldClose = [CentralTools runCommand:command withKeyword:keyword];
         if (shouldClose) {
             // now that we've served our purpose, close the window and restore focus
+            // TODO: prevent application from appearing on alt+tab application switcher
             [self close];
             AppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
             [appDelegate restorePreviousApplication];
