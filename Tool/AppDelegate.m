@@ -36,35 +36,7 @@
     [_statusItem setAction:@selector(itemClicked:)];
     
     [self setUpShortcuts];
-
-    
-    
-    
-    [IMGSession anonymousSessionWithClientID:@"anonToken" withDelegate:self];
-    [IMGGalleryRequest hotGalleryPage:0 success:^(NSArray *objects) {
-        NSLog(@"Yay");
-        //use gallery objects in a table for example
-        1;
-    } failure:^(NSError *error) {
-        NSLog(@"No: %@", error);
-        //handle error
-    }];
-
 }
-
-
-
--(void)imgurSessionNeedsExternalWebview:(NSURL *)url completion:(void (^)())completion{
-    
-    self.continueHandler = [completion copy];
-    NSLog(@"do session thing..");
-    //go to safari to login, configure your imgur app to redirect to this app using URL scheme.
-//    [self openURL:url];
-    
-}
-
-
-
 
 - (void)setUpShortcuts {
     // TODO: use CGEventTapCreate() to block the event from other applications.
@@ -77,7 +49,6 @@
         if (([theEvent modifierFlags] & cmdKeyModifier) && [theEvent keyCode] == keycode) {
             self.previousApplication = [[NSWorkspace sharedWorkspace] frontmostApplication];
             
-            NSLog(@"Shortcut pressed.");
             [NSApp activateIgnoringOtherApps:YES]; // bring app to front
             [self openSearchWindow];
             [NSApp activateIgnoringOtherApps:NO]; // reset flag (just in case; this seems okay)

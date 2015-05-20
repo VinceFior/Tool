@@ -36,9 +36,10 @@
         } else {
             [CentralTools printMessage:[NSString stringWithFormat:@"I don\'t know how to process search string \"%@\".", searchString]];
         }
-    } else if ([searchStringTerms count] == 2) {
+    } else if ([searchStringTerms count] >= 2) {
         NSString *command = searchStringTerms[0];
-        NSString *keyword = searchStringTerms[1];
+        // the "keyword" is allowed to be more than one (space-separated) word
+        NSString *keyword = [searchString substringFromIndex:[command length] + 1];
         [CentralTools printMessage:[NSString stringWithFormat:@"Attempting to run command \"%@\" with keyword \"%@\".",
                             command, keyword]];
         BOOL shouldClose = [CentralTools runCommand:command withKeyword:keyword];

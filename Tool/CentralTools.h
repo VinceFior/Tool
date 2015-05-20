@@ -14,5 +14,6 @@
 + (void)printMessage:(NSString *)text;
 + (void)copyToClipboard:(NSString *)text;
 + (BOOL)runCommand:(NSString *)command withKeyword:(NSString *)keyword;
++ (void)saveStringToDesktop:(NSString *)contentString asFile:(NSString *)fileNameString;
 
 @end

@@ -10,6 +10,7 @@
 #import "ReactionImage.h"
 #import "ReactionImageList.h"
 #import "FileManager.h"
+#import "ImgurDelegate.h"
 
 @implementation CentralTools
 
@@ -43,11 +44,30 @@
         } else {
             [self printMessage:[NSString stringWithFormat:@"I don\'t know how to list \"%@\".", keyword]];
         }
+    } else if ([command isEqualToString:@"getalbum"]) {
+        ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
+        [imgurDelegate storeAlbumWithID:keyword];
+        [self printMessage:[NSString stringWithFormat:@"Getting album with ID %@..", keyword]];
     } else {
         [self printMessage:[NSString stringWithFormat:@"Could not find command \"%@\", which was given with keyword \"%@\".",
                             command, keyword]];
     }
     return NO;
+}
+
++ (void)saveStringToDesktop:(NSString *)contentString asFile:(NSString *)fileNameString {
+    // get the desktop directory:
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDesktopDirectory, NSUserDomainMask, YES);
+    NSString *desktopDirectory = [paths objectAtIndex:0];
+    
+    // make a file name to write the data to using the desktop directory:
+    NSString *fileNamePath = [NSString stringWithFormat:@"%@/%@",
+                          desktopDirectory, fileNameString];
+    
+    //save content to the documents directory
+    [contentString writeToFile:fileNamePath atomically:NO
+                      encoding:NSStringEncodingConversionAllowLossy error:nil];
 }
 
 @end

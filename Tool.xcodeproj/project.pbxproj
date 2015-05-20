@@ -48,6 +48,7 @@
 		BFBBF8251B0BE7D800669BCE /* IMGMemeGen.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBBF81B1B0BE7D800669BCE /* IMGMemeGen.m */; };
 		BFBBF8261B0BE7D800669BCE /* IMGNotificationRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBBF81D1B0BE7D800669BCE /* IMGNotificationRequest.m */; };
 		BFDDA19A1B0BD89400678CA9 /* CentralTools.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA1991B0BD89400678CA9 /* CentralTools.m */; };
+		BFE579421B0C0EC400C4E59B /* ImgurDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE579411B0C0EC400C4E59B /* ImgurDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -145,6 +146,8 @@
 		BFBBF81D1B0BE7D800669BCE /* IMGNotificationRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMGNotificationRequest.m; sourceTree = "<group>"; };
 		BFDDA1981B0BD89400678CA9 /* CentralTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CentralTools.h; sourceTree = "<group>"; };
 		BFDDA1991B0BD89400678CA9 /* CentralTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CentralTools.m; sourceTree = "<group>"; };
+		BFE579401B0C0EC400C4E59B /* ImgurDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImgurDelegate.h; sourceTree = "<group>"; };
+		BFE579411B0C0EC400C4E59B /* ImgurDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImgurDelegate.m; sourceTree = "<group>"; };
 		E9B3154FC6D8FF8BAB4B89D0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -212,6 +215,8 @@
 				BF0FF2581B06FA710073C05D /* AppDelegate.m */,
 				BFDDA1981B0BD89400678CA9 /* CentralTools.h */,
 				BFDDA1991B0BD89400678CA9 /* CentralTools.m */,
+				BFE579401B0C0EC400C4E59B /* ImgurDelegate.h */,
+				BFE579411B0C0EC400C4E59B /* ImgurDelegate.m */,
 				BF0FF2851B072FFD0073C05D /* FileManager.h */,
 				BF0FF2861B072FFD0073C05D /* FileManager.m */,
 				BF0FF25C1B06FA710073C05D /* ViewController.h */,
@@ -483,6 +488,7 @@
 				BF0FF25E1B06FA710073C05D /* ViewController.m in Sources */,
 				BFBBF80A1B0BE7CE00669BCE /* IMGNotification.m in Sources */,
 				BFBBF8071B0BE7CE00669BCE /* IMGMeme.m in Sources */,
+				BFE579421B0C0EC400C4E59B /* ImgurDelegate.m in Sources */,
 				BFBBF8011B0BE7CE00669BCE /* IMGComment.m in Sources */,
 				BFBBF7FE1B0BE7CE00669BCE /* IMGAccountSettings.m in Sources */,
 				BFBBF7FF1B0BE7CE00669BCE /* IMGAlbum.m in Sources */,
