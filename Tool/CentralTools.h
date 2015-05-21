@@ -9,11 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+typedef NS_ENUM(int, CommandReturn) {
+    CommandReturnNothing,
+    CommandReturnClose,
+    CommandReturnCloseReopen,
+};
+
 @interface CentralTools : NSObject
 
 + (void)printMessage:(NSString *)text;
 + (void)copyToClipboard:(NSString *)text;
-+ (BOOL)runCommand:(NSString *)command withKeyword:(NSString *)keyword;
++ (CommandReturn)runCommand:(NSString *)command withKeyword:(NSString *)keyword;
 + (void)saveStringToDesktop:(NSString *)contentString asFile:(NSString *)fileNameString;
 + (void)printHelpMessage;
 

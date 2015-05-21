@@ -12,6 +12,11 @@
 @interface FileManager : NSObject
 
 @property (strong, nonatomic) ReactionImageList *imageList;
+@property (strong, nonatomic) NSString *schoolRoot;
+@property (strong, nonatomic) NSDictionary *schoolClasses;
+@property (strong, nonatomic) NSString *youTubeMusicPlaylistID;
+@property (strong, nonatomic) NSString *imgurAPIClientID;
+@property (strong, nonatomic) NSString *imgurAlbumID;
 
 + (id)sharedManager;
 

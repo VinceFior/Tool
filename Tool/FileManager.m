@@ -26,6 +26,13 @@
         // load data (only once per shared lifetime)
         NSString *imageFilePath = @"/Users/vincent/Desktop/image-database.txt";
         self.imageList = [self getImageList:imageFilePath];
+
+        NSString *schoolFilePath = @"/Users/vincent/Desktop/school-folders.txt";
+        [self setSchoolProperties:schoolFilePath];
+
+        NSString *personalSettingsFilePath = @"/Users/vincent/Desktop/personal-settings.txt";
+        [self setPersonalSettings:personalSettingsFilePath];
+        
     }
     
     return self;
@@ -67,6 +74,34 @@
     ReactionImageList *imageList = [[ReactionImageList alloc] init];
     imageList.imageList = images;
     return imageList;
+}
+
+// Set the properties related to school files.
+- (void) setSchoolProperties:(NSString *)schoolFilePath {
+    NSData* fileContents = [NSData dataWithContentsOfFile:schoolFilePath];
+    NSError *error = nil;
+    id object = [NSJSONSerialization JSONObjectWithData:fileContents options:0 error:&error];
+    if (error) {
+        NSLog(@"Error reading school file: %@", error);
+        return;
+    }
+    self.schoolRoot = object[@"default"];
+    NSDictionary *classesDict = object[@"classes"];
+    self.schoolClasses = classesDict;
+}
+
+// Sets the properties related to personal settings (per se, not more specific files).
+- (void) setPersonalSettings:(NSString *)personalSettingsFilePath {
+    NSData* fileContents = [NSData dataWithContentsOfFile:personalSettingsFilePath];
+    NSError *error = nil;
+    id object = [NSJSONSerialization JSONObjectWithData:fileContents options:0 error:&error];
+    if (error) {
+        NSLog(@"Error reading prsonal settings file: %@", error);
+        return;
+    }
+    self.youTubeMusicPlaylistID = object[@"youtube-music-playlist-id"];
+    self.imgurAPIClientID = object[@"imgur-api-client-id"];
+    self.imgurAlbumID = object[@"imgur-album-id"];
 }
 
 @end

@@ -29,16 +29,26 @@
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"gif <keyword>\" to copy the URL of a reaction image, like \"gif nope\""]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"list gif\" to list all reaction images"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"getalbum <album ID>\" to generate a list of reaction images for the given album"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"updatealbum\" to update the image-database.txt file"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"dict <word>\" to open Dictionary.com to the given word"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"xkcd <keyword>\" to open the first xkcd.com result for the given keyword"]];
-    [helpMessage appendString:[NSString stringWithFormat:@"\n\"music <keyword>\" to open the first matching video on my YouTube \'Music\' playlist"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"ytmusic <keyword>\" to open the first matching video on my YouTube \'Music\' playlist"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"youtube <keyword>\" to search YouTube for the given keyword"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"music <keyword>\" to search my Google Play Music library for the given keyword"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"google <keyword>\" to search Google for the given keyword"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"school <class>\" to open the folder for my given class in Finder"]];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"syl <class>\" to open the syllabus for my given class in Finder"]];
     [CentralTools printMessage:helpMessage];
 }
 
-+ (BOOL)runCommand:(NSString *)command withKeyword:(NSString *)keyword {
++ (CommandReturn)runCommand:(NSString *)command withKeyword:(NSString *)keyword {
     
-    if ([command isEqualToString:@"gif"]) {
+    if ([command isEqualToString:@"help"]) {
+        
+        [CentralTools printHelpMessage];
+        return CommandReturnNothing;
+        
+    } else if ([command isEqualToString:@"gif"]) {
         
         FileManager *fileManager = [FileManager sharedManager];
         ReactionImageList *imageList = fileManager.imageList;
@@ -46,9 +56,10 @@
         if (bestImage != NULL) {
             [CentralTools printMessage:[NSString stringWithFormat:@"Found image entitled \"%@\". Copying its URL to clipboard..", bestImage.title]];
             [CentralTools copyToClipboard:bestImage.url];
-            return YES;
+            return CommandReturnCloseReopen;
         } else {
             NSLog(@"Could not find image.");
+            return CommandReturnNothing;
         }
         
     } else if ([command isEqualToString:@"list"]) {
@@ -60,39 +71,124 @@
         } else {
             [CentralTools printMessage:[NSString stringWithFormat:@"I don\'t know how to list \"%@\".", keyword]];
         }
+        return CommandReturnNothing;
         
     } else if ([command isEqualToString:@"getalbum"]) {
         
         [CentralTools printMessage:[NSString stringWithFormat:@"Getting album with ID %@..", keyword]];
         ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
-        [imgurDelegate storeAlbumWithID:keyword];
+        [imgurDelegate storeAlbumWithID:keyword asFilename:@"image-database-new.txt"];
+        return CommandReturnNothing;
         
+    } else if ([command isEqualToString:@"updatealbum"]) {
+        
+        FileManager *fileManager = [FileManager sharedManager];
+        NSString *imgurAlbumID = fileManager.imgurAlbumID;
+        
+        [CentralTools printMessage:[NSString stringWithFormat:@"Updating album (with ID %@)..", imgurAlbumID]];
+        ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
+        [imgurDelegate storeAlbumWithID:imgurAlbumID asFilename:@"image-database.txt"];
+        return CommandReturnNothing;
+    
     } else if ([command isEqualToString:@"dict"]) {
         
         // Open the Dictionary.com page with the keyword
         [CentralTools openUrlWithString:[NSString stringWithFormat:@"http://dictionary.reference.com/browse/%@", keyword]];
+        return CommandReturnClose;
         
     } else if ([command isEqualToString:@"xkcd"]) {
         
         // Google the keyword under "site:xkcd.com" with 'I'm feeling lucky' (first result)
         [CentralTools openUrlWithString:[NSString stringWithFormat:@"http://www.google.com/webhp?gws_rd=ssl#q=%@+site:xkcd.com&btnI=I", keyword]];
+        return CommandReturnClose;
         
-    } else if ([command isEqualToString:@"music"]) {
+    } else if ([command isEqualToString:@"ytmusic"]) {
         
+        FileManager *fileManager = [FileManager sharedManager];
+        NSString *playlistID = fileManager.youTubeMusicPlaylistID;
         [CentralTools printMessage:[NSString stringWithFormat:@"Searching YouTube playlist for \"%@\".", keyword]];
-        NSString *playlistID = @"PL2RjSZTkAtlM1UiG59LRGWtD2s6IDOEXS"; // Vincent's music playlist
         [CentralTools getYoutubeMusicVideoForPlaylist:playlistID atIndex:1 withKeyword:keyword];
+        return CommandReturnClose;
         
     } else if ([command isEqualToString:@"youtube"]) {
         
         NSString *searchURL = [NSString stringWithFormat:@"https://www.youtube.com/results?search_query=%@", keyword];
         [CentralTools openUrlWithString:searchURL];
+        return CommandReturnClose;
+        
+    } else if ([command isEqualToString:@"music"]) {
+        
+        NSString *searchURL = [NSString stringWithFormat:@"https://play.google.com/music/listen?u=0#/sr/%@", keyword];
+        [CentralTools openUrlWithString:searchURL];
+        return CommandReturnClose;
+        
+    } else if ([command isEqualToString:@"google"]) {
+        
+        NSString *searchURL = [NSString stringWithFormat:@"https://www.google.com/search?q=%@", keyword];
+        [CentralTools openUrlWithString:searchURL];
+        return CommandReturnClose;
+        
+    } else if ([command isEqualToString:@"school"]) {
+        
+        FileManager *fileManager = [FileManager sharedManager];
+        NSString *schoolPath = fileManager.schoolRoot;
+        if ([keyword length] > 0) {
+            BOOL hasAddedPath = NO;
+            for (NSDictionary *classDict in fileManager.schoolClasses) {
+                if (hasAddedPath) {
+                    break;
+                }
+                for (NSString *classKeyword in classDict[@"keywords"]) {
+                    if ([[classKeyword lowercaseString] containsString:[keyword lowercaseString]]
+                        || [[keyword lowercaseString] containsString:[classKeyword lowercaseString]]) {
+                        NSString *extraPath = classDict[@"path"];
+                        schoolPath = [schoolPath stringByAppendingString:[NSString stringWithFormat:@"/%@",
+                                                                          extraPath]];
+                        break;
+                    }
+                }
+            }
+        }
+        [[NSWorkspace sharedWorkspace] selectFile:schoolPath inFileViewerRootedAtPath:@""];
+        return CommandReturnClose;
+        
+    } else if ([command isEqualToString:@"syl"]) {
+        
+        FileManager *fileManager = [FileManager sharedManager];
+        if ([keyword length] > 0) {
+            for (NSDictionary *classDict in fileManager.schoolClasses) {
+                for (NSString *classKeyword in classDict[@"keywords"]) {
+                    if ([[classKeyword lowercaseString] containsString:[keyword lowercaseString]]
+                        || [[keyword lowercaseString] containsString:[classKeyword lowercaseString]]) {
+                        NSString *schoolPath = fileManager.schoolRoot;
+                        NSString *classExtraPath = classDict[@"path"];
+                        NSString *syllabusExtraPath = classDict[@"syllabus"];
+                        if (syllabusExtraPath == nil) {
+                            // if the syllabus isn't specified, just show the folder
+                            syllabusExtraPath = @"";
+                        }
+                        NSString *syllabusFullPath = [NSString stringWithFormat:@"%@/%@/%@", schoolPath, classExtraPath, syllabusExtraPath];
+                        
+                        BOOL openedFile = [[NSWorkspace sharedWorkspace] openFile:syllabusFullPath];
+                        if (openedFile) {
+                            return CommandReturnClose;
+                        } else {
+                            [CentralTools printMessage:
+                             [NSString stringWithFormat:@"Could not open syllabus of path: %@", syllabusFullPath]];
+                            return CommandReturnNothing;
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return CommandReturnNothing;
     
     } else {
         [CentralTools printMessage:[NSString stringWithFormat:@"Could not find command \"%@\", which was given with keyword \"%@\".",
                             command, keyword]];
+        return CommandReturnNothing;
     }
-    return NO;
 }
 
 + (void)getYoutubeMusicVideoForPlaylist:(NSString *)playlistID atIndex:(int)startIndex withKeyword:(NSString *)keyword {

@@ -8,6 +8,7 @@
 
 #import "ImgurDelegate.h"
 #import "CentralTools.h"
+#import "FileManager.h"
 
 @implementation ImgurDelegate
 
@@ -24,14 +25,15 @@
 - (id)init {
     if (self = [super init]) {
         // configure the session only the first time the singleton is created
-        NSString *autobotClientID = @"8bdf7f21bdbd3ce"; // this key belongs to the AutobotMKI
+        FileManager *fileManager = [FileManager sharedManager];
+        NSString *autobotClientID = fileManager.imgurAPIClientID;
         [IMGSession anonymousSessionWithClientID:autobotClientID withDelegate:self];
     }
     
     return self;
 }
 
-- (void)storeAlbumWithID:(NSString *)albumID {
+- (void)storeAlbumWithID:(NSString *)albumID asFilename:(NSString *)fileName {
     [IMGAlbumRequest albumWithID:albumID success:^(IMGAlbum *album) {
         NSLog(@"Got the album, titled \"%@\".", album.title);
         
@@ -84,8 +86,8 @@
             returnString = [returnString stringByAppendingString:imageString];
         }
         
-        [CentralTools saveStringToDesktop:returnString asFile:@"image-database-new.txt"];
-        NSLog(@"Saved album to desktop as \"image-database-new.txt\".");
+        [CentralTools saveStringToDesktop:returnString asFile:fileName];
+        NSLog(@"Saved album to desktop as \"%@\".", fileName);
         
     } failure:^(NSError *error) {
         NSLog(@"Failed to store album with ID \"%@\". Error: %@", albumID, error);
