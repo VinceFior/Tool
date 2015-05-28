@@ -35,7 +35,7 @@
 
 - (void)storeAlbumWithID:(NSString *)albumID asFilename:(NSString *)fileName {
     [IMGAlbumRequest albumWithID:albumID success:^(IMGAlbum *album) {
-        NSLog(@"Got the album, titled \"%@\".", album.title);
+        [CentralTools printMessage:[NSString stringWithFormat:@"Got the album, titled \"%@\".", album.title]];
         
         NSString *urlIdentifier = @"URL: ";
         NSString *keywordsIdentifier = @"Keywords: ";
@@ -87,7 +87,7 @@
         }
         
         [CentralTools saveStringToDesktop:returnString asFile:fileName];
-        NSLog(@"Saved album to desktop as \"%@\".", fileName);
+        [CentralTools printMessage:[NSString stringWithFormat:@"Saved album to desktop as \"%@\".", fileName]];
         
     } failure:^(NSError *error) {
         NSLog(@"Failed to store album with ID \"%@\". Error: %@", albumID, error);

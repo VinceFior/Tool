@@ -96,7 +96,7 @@
     NSError *error = nil;
     id object = [NSJSONSerialization JSONObjectWithData:fileContents options:0 error:&error];
     if (error) {
-        NSLog(@"Error reading prsonal settings file: %@", error);
+        NSLog(@"Error reading personal settings file: %@", error);
         return;
     }
     self.youTubeMusicPlaylistID = object[@"youtube-music-playlist-id"];

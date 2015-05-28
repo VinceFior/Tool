@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14D131" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TextInputWindowController">
             <connections>
                 <outlet property="searchField" destination="NvC-HR-SAD" id="bZo-l3-uu2"/>
+                <outlet property="textView" destination="mEt-Qr-2Mt" id="o4W-PP-LZA"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -15,14 +16,14 @@
         <window title="Tool!" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="400" height="75"/>
+            <rect key="contentRect" x="196" y="240" width="400" height="100"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="se5-gp-TjO">
-                <rect key="frame" x="0.0" y="0.0" width="400" height="75"/>
+                <rect key="frame" x="0.0" y="1" width="400" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NvC-HR-SAD">
-                        <rect key="frame" x="63" y="33" width="300" height="22"/>
+                    <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NvC-HR-SAD">
+                        <rect key="frame" x="50" y="63" width="300" height="22"/>
                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="S9N-tG-Q51">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -36,12 +37,49 @@
                             <outlet property="delegate" destination="-2" id="N1D-HJ-BcG"/>
                         </connections>
                     </searchField>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="46k-P5-6Ec">
+                        <rect key="frame" x="20" y="20" width="360" height="30"/>
+                        <clipView key="contentView" id="IdI-3b-BHO">
+                            <rect key="frame" x="1" y="1" width="223" height="133"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="mEt-Qr-2Mt">
+                                    <rect key="frame" x="0.0" y="0.0" width="223" height="133"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="358" height="28"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="358" height="28"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="XaM-LV-Dm2">
+                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="th4-lA-nwH">
+                            <rect key="frame" x="224" y="1" width="15" height="133"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="46k-P5-6Ec" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" id="EWV-bA-UQn"/>
+                    <constraint firstAttribute="bottom" secondItem="46k-P5-6Ec" secondAttribute="bottom" constant="20" id="KIJ-Q7-pWg"/>
+                    <constraint firstItem="46k-P5-6Ec" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="50" id="TEg-Gs-uhs"/>
+                    <constraint firstAttribute="trailing" secondItem="46k-P5-6Ec" secondAttribute="trailing" constant="20" id="aEM-rD-VfD"/>
+                    <constraint firstItem="NvC-HR-SAD" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="50" id="aKI-hU-4Td"/>
+                    <constraint firstAttribute="trailing" secondItem="NvC-HR-SAD" secondAttribute="trailing" constant="50" id="b69-VG-0Pf"/>
+                    <constraint firstItem="NvC-HR-SAD" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="15" id="mcc-RW-vSl"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
             </connections>
-            <point key="canvasLocation" x="200" y="285.5"/>
+            <point key="canvasLocation" x="200" y="298"/>
         </window>
     </objects>
 </document>

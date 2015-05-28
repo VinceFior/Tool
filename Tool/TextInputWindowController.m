@@ -18,7 +18,10 @@
 
 - (void)windowDidLoad {
     [super windowDidLoad];
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    
+    // tell the AppDelegate what our text field is
+    AppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+    appDelegate.outputTextView = self.textView;
 }
 
 - (IBAction)searchEntered:(id)sender {
@@ -34,7 +37,7 @@
         if ([searchStringTerms count] > 1) {
             keyword = [searchString substringFromIndex:[command length] + 1];
         }
-        [CentralTools printMessage:[NSString stringWithFormat:@"Attempting to run command \"%@\" with keyword \"%@\".",
+        [CentralTools logMessage:[NSString stringWithFormat:@"Attempting to run command \"%@\" with keyword \"%@\".",
                             command, keyword]];
         CommandReturn commandReturn = [CentralTools runCommand:command withKeyword:keyword];
         if (commandReturn != CommandReturnNothing) {

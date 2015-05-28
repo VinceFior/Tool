@@ -17,6 +17,8 @@ typedef NS_ENUM(int, CommandReturn) {
 
 @interface CentralTools : NSObject
 
++ (void)clearPrintedMessages;
++ (void)logMessage:(NSString *)text;
 + (void)printMessage:(NSString *)text;
 + (void)copyToClipboard:(NSString *)text;
 + (CommandReturn)runCommand:(NSString *)command withKeyword:(NSString *)keyword;

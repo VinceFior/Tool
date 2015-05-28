@@ -11,6 +11,7 @@
 @interface TextInputWindowController : NSWindowController
 
 @property (assign) IBOutlet NSSearchField *searchField;
+@property (assign) IBOutlet NSTextView *textView;
 
 - (IBAction)searchEntered:(id)sender;
 

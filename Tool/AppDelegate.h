@@ -15,6 +15,8 @@
 @property (nonatomic) BOOL isSearchWindowOpen;
 @property (strong, nonatomic) NSRunningApplication *previousApplication;
 
+@property (strong) NSTextView *outputTextView;
+
 - (void) restorePreviousApplication;
 
 @end

@@ -11,11 +11,36 @@
 #import "ReactionImageList.h"
 #import "FileManager.h"
 #import "ImgurDelegate.h"
+#import "AppDelegate.h"
 
 @implementation CentralTools
 
++ (void)clearPrintedMessages {
+    AppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+    [appDelegate.outputTextView setString:@""];
+}
+
++ (void)logMessage:(NSString *)text {
+    [CentralTools printMessage:text withImportance:NO];
+}
+
 + (void)printMessage:(NSString *)text {
+    [CentralTools printMessage:text withImportance:YES];
+}
+
++ (void)printMessage:(NSString *)text withImportance:(BOOL)important {
     NSLog(text);
+    if (important) {
+        AppDelegate *appDelegate = [[NSApplication sharedApplication] delegate];
+        NSString *newText;
+        if ([appDelegate.outputTextView.string length] == 0) {
+            newText = text;
+        } else {
+            newText = [NSString stringWithFormat:@"%@\n\n%@", text, appDelegate.outputTextView.string];
+        }
+        [appDelegate.outputTextView setString:newText];
+    }
+    
 }
 
 + (void)copyToClipboard:(NSString *)text {
@@ -43,6 +68,8 @@
 
 + (CommandReturn)runCommand:(NSString *)command withKeyword:(NSString *)keyword {
     
+    [CentralTools clearPrintedMessages];
+    
     if ([command isEqualToString:@"help"]) {
         
         [CentralTools printHelpMessage];
@@ -58,7 +85,7 @@
             [CentralTools copyToClipboard:bestImage.url];
             return CommandReturnCloseReopen;
         } else {
-            NSLog(@"Could not find image.");
+            [CentralTools printMessage:@"Could not find image."];
             return CommandReturnNothing;
         }
         
