@@ -24,13 +24,18 @@
 - (id)init {
     if (self = [super init]) {
         // load data (only once per shared lifetime)
-        NSString *imageFilePath = @"/Users/vincent/Desktop/image-database.txt";
+        
+        1; // TODO: let the user set the root directory
+        NSString *rootDirectory = @"/Users/vincent/Documents/tool/config";
+        
+        2; // TODO: check if files exist (to avoid crashing)
+        NSString *imageFilePath = [rootDirectory stringByAppendingString:@"/image-database.txt"];
         self.imageList = [self getImageList:imageFilePath];
 
-        NSString *schoolFilePath = @"/Users/vincent/Desktop/school-folders.txt";
+        NSString *schoolFilePath = [rootDirectory stringByAppendingString:@"/school-folders.txt"];
         [self setSchoolProperties:schoolFilePath];
 
-        NSString *personalSettingsFilePath = @"/Users/vincent/Desktop/personal-settings.txt";
+        NSString *personalSettingsFilePath = [rootDirectory stringByAppendingString:@"/personal-settings.txt"];
         [self setPersonalSettings:personalSettingsFilePath];
         
     }
