@@ -36,7 +36,7 @@
         if ([appDelegate.outputTextView.string length] == 0) {
             newText = text;
         } else {
-            newText = [NSString stringWithFormat:@"%@\n\n%@", text, appDelegate.outputTextView.string];
+            newText = [NSString stringWithFormat:@"%@\n%@", text, appDelegate.outputTextView.string];
         }
         [appDelegate.outputTextView setString:newText];
     }
@@ -132,9 +132,11 @@
     } else if ([command isEqualToString:@"ytmusic"]) {
         
         FileManager *fileManager = [FileManager sharedManager];
+        NSString *apiKey = fileManager.youTubeAPIKey;
         NSString *playlistID = fileManager.youTubeMusicPlaylistID;
         [CentralTools printMessage:[NSString stringWithFormat:@"Searching YouTube playlist for \"%@\".", keyword]];
-        [CentralTools getYoutubeMusicVideoForPlaylist:playlistID atIndex:1 withKeyword:keyword];
+        [CentralTools getYoutubeMusicVideoForPlaylist:playlistID withKeyword:keyword withAPIKey:apiKey
+                                        withPageToken:nil shouldOpen:YES];
         return CommandReturnClose;
         
     } else if ([command isEqualToString:@"youtube"]) {
@@ -218,74 +220,62 @@
     }
 }
 
-+ (void)getYoutubeMusicVideoForPlaylist:(NSString *)playlistID atIndex:(int)startIndex withKeyword:(NSString *)keyword {
+/*
+ * Searches the titles of the videos in the given playlist for the given keyword, using apiKey.
+ * The pageToken is used to determine the offset of results.
+ * Only actually opens the video if shouldOpen is true.
+ */
++ (void)getYoutubeMusicVideoForPlaylist:(NSString *)playlistID withKeyword:(NSString *)keyword
+                             withAPIKey:(NSString *)apiKey withPageToken:(NSString *)pageToken
+                             shouldOpen:(BOOL)shouldOpen {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    //manager.responseSerializer.acceptableContentTypes = [manager.responseSerializer.acceptableContentTypes setByAddingObject:@"application/atom+xml"];
     
-    const int maxStartIndex = 1000;
-    if (startIndex > maxStartIndex) {
-        // this case should not happen
-        NSString *failureMessage = [NSString stringWithFormat:@"Definitely could not find video with keyword \"%@\" in playlist with ID \"%@\".",
-                                    keyword, playlistID];
-        [CentralTools printMessage:failureMessage];
-        return;
+    int maxResults = 50; // max allowed by YouTube API v3
+    NSString *playlistRequestURLString;
+    if (pageToken == nil || [pageToken length] == 0) {
+        playlistRequestURLString = [NSString stringWithFormat:@"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=%i&playlistId=%@&key=%@", maxResults, playlistID, apiKey];
+    } else {
+        playlistRequestURLString = [NSString stringWithFormat:@"https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=%i&playlistId=%@&pageToken=%@&key=%@", maxResults, playlistID, pageToken, apiKey];
     }
-    
-    int maxResults = 25;
-    NSString *playlistRequestURLString = [NSString stringWithFormat:@"http://gdata.youtube.com/feeds/api/playlists/%@?start-index=%i&amp;max-results=%i", playlistID, startIndex, maxResults];
     [manager GET:playlistRequestURLString parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSData * data = (NSData *)responseObject;
-        
-        NSString *fetchedXML = [NSString stringWithCString:[data bytes] encoding:NSISOLatin1StringEncoding];
-        
-        NSString *lowercaseFetchedXML = [fetchedXML lowercaseString];
-        NSString *lowercaseKeyword = [keyword lowercaseString];
-        
-        if ([lowercaseFetchedXML containsString:lowercaseKeyword]) {
-            // naively assume that the next URL of the right format is the one we want
-            NSRange keywordRange = [lowercaseFetchedXML rangeOfString:lowercaseKeyword];
-            NSString *afterKeywordString = [fetchedXML substringFromIndex:keywordRange.location + keywordRange.length];
-            
-            NSString *videoBaseString = @"<link rel='related' type='application/atom+xml' href='http://gdata.youtube.com/feeds/api/videos/";
-            NSRange watchURLRange = [afterKeywordString rangeOfString:videoBaseString];
-            NSString *afterWatchURLString = [afterKeywordString substringFromIndex:watchURLRange.location + watchURLRange.length];
-            
-            NSString *videoBaseEndString = @"\'/>";
-            NSRange videoIDRange = [afterWatchURLString rangeOfString:videoBaseEndString];
-            NSString *videoID = [afterWatchURLString substringToIndex:videoIDRange.location];
-            
-            NSString *videoURLString = [NSString stringWithFormat:@"https://www.youtube.com/watch?v=%@", videoID];
-            videoURLString = [videoURLString stringByAppendingString:[NSString stringWithFormat:@"&list=%@", playlistID]];
-            
-            [CentralTools openUrlWithString:videoURLString];
-            [CentralTools printMessage:[NSString stringWithFormat:@"Found video with keyword \"%@\".", keyword]];
-        } else {
-            // since we only get one page of results, try the next page
-            
-            // see if the next search would be over the "totalResults" of the playlist
-            NSRange totalResultsStartRange = [fetchedXML rangeOfString:@"<openSearch:totalResults>"];
-            NSString *afterTotalResultsString = [fetchedXML substringFromIndex:totalResultsStartRange.location + totalResultsStartRange.length];
-            NSString *totalResultsEndString = @"</openSearch:totalResults>";
-            NSRange totalResultsEndRange = [afterTotalResultsString rangeOfString:totalResultsEndString];
-            NSString *totalResultsString = [afterTotalResultsString substringToIndex:totalResultsEndRange.location];
-            
-            int totalResults = [totalResultsString intValue];
-            if (startIndex + maxResults <= totalResults) {
-                [CentralTools getYoutubeMusicVideoForPlaylist:playlistID atIndex:startIndex + maxResults withKeyword:keyword];
-            } else {
-                NSString *failureMessage = [NSString stringWithFormat:@"Could not find video with keyword \"%@\" in playlist with ID \"%@\".",
-                                            keyword, playlistID];
-                [CentralTools printMessage:failureMessage];
-                
-                // fall back on searching for the keyword (with "song") on YouTube
-                [CentralTools printMessage:[NSString stringWithFormat:@"Falling back by searching YouTube for \"%@\".", keyword]];
-                NSString *searchURL = [NSString stringWithFormat:@"https://www.youtube.com/results?search_query=%@", keyword];
-                [CentralTools openUrlWithString:searchURL];
+        id payload = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        NSString *keywordLower = [keyword lowercaseString];
+        NSDictionary *playlistInfo = payload;
+        NSArray *items = playlistInfo[@"items"];
+        BOOL hasOpened = NO;
+        for (NSDictionary *item in items) {
+            NSDictionary *snippet = item[@"snippet"];
+            NSString *title = snippet[@"title"];
+            NSString *titleLower = [title lowercaseString];
+            if ([titleLower containsString:keywordLower]) {
+                if (!hasOpened && shouldOpen) {
+                    hasOpened = YES;
+                    NSDictionary *resourceID = snippet[@"resourceId"];
+                    NSString *videoID = resourceID[@"videoId"];
+                    NSString *videoURLString = [NSString stringWithFormat:@"https://www.youtube.com/watch?v=%@", videoID];
+                    [CentralTools openUrlWithString:videoURLString];
+                    [CentralTools printMessage:[NSString stringWithFormat:@"Opening video \"%@\".", title]];
+                } else {
+                    [CentralTools printMessage:[NSString stringWithFormat:@"Also found video \"%@\".", title]];
+                }
             }
-            
         }
         
+        NSString *nextPageToken = playlistInfo[@"nextPageToken"];
+        if (nextPageToken) {
+            // we have more results
+            [CentralTools getYoutubeMusicVideoForPlaylist:playlistID withKeyword:keyword withAPIKey:apiKey withPageToken:nextPageToken shouldOpen:!hasOpened];
+        } else if (!hasOpened) {
+            // we can't find the song in this playlist
+            NSString *failureMessage = [NSString stringWithFormat:@"Could not find video with keyword \"%@\" in playlist with ID \"%@\".",
+                                        keyword, playlistID];
+            [CentralTools printMessage:failureMessage];
+            // fall back by searching for the keyword on YouTube
+            [CentralTools printMessage:[NSString stringWithFormat:@"Falling back by searching YouTube for \"%@\".", keyword]];
+            NSString *searchURL = [NSString stringWithFormat:@"https://www.youtube.com/results?search_query=%@", keyword];
+            [CentralTools openUrlWithString:searchURL];
+        }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);

@@ -104,6 +104,7 @@
         NSLog(@"Error reading personal settings file: %@", error);
         return;
     }
+    self.youTubeAPIKey = object[@"youtube-api-key"];
     self.youTubeMusicPlaylistID = object[@"youtube-music-playlist-id"];
     self.imgurAPIClientID = object[@"imgur-api-client-id"];
     self.imgurAlbumID = object[@"imgur-album-id"];
