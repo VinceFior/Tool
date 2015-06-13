@@ -33,7 +33,7 @@
     return self;
 }
 
-- (void)storeAlbumWithID:(NSString *)albumID asFilename:(NSString *)fileName {
+- (void)storeAlbumWithID:(NSString *)albumID toFilePath:(NSString *)filePath {
     [IMGAlbumRequest albumWithID:albumID success:^(IMGAlbum *album) {
         [CentralTools printMessage:[NSString stringWithFormat:@"Got the album, titled \"%@\".", album.title]];
         
@@ -86,8 +86,12 @@
             returnString = [returnString stringByAppendingString:imageString];
         }
         
-        [CentralTools saveStringToDesktop:returnString asFile:fileName];
-        [CentralTools printMessage:[NSString stringWithFormat:@"Saved album to desktop as \"%@\".", fileName]];
+        [returnString writeToFile:filePath atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+        [CentralTools printMessage:[NSString stringWithFormat:@"Saved album as \"%@\".", filePath]];
+        
+        // refresh the file manager's image list
+        FileManager *fileManager = [FileManager sharedManager];
+        [fileManager updateImageList];
         
     } failure:^(NSError *error) {
         NSLog(@"Failed to store album with ID \"%@\". Error: %@", albumID, error);

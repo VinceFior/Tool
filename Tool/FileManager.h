@@ -11,6 +11,8 @@
 
 @interface FileManager : NSObject
 
+@property (strong, nonatomic) NSString *rootDirectory;
+@property (strong, nonatomic) NSString *imageFilePath;
 @property (strong, nonatomic) ReactionImageList *imageList;
 @property (strong, nonatomic) NSString *schoolRoot;
 @property (strong, nonatomic) NSDictionary *schoolClasses;
@@ -20,5 +22,6 @@
 @property (strong, nonatomic) NSString *imgurAlbumID;
 
 + (id)sharedManager;
+- (void) updateImageList;
 
 @end

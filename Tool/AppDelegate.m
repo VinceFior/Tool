@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "TextInputWindowController.h"
+#import "FileManager.h"
 #include <Carbon/Carbon.h> // for key codes
 
 @interface AppDelegate ()
@@ -36,6 +37,9 @@
     [_statusItem setAction:@selector(itemClicked:)];
     
     [self setUpShortcuts];
+    
+    // set up file manager
+    [FileManager sharedManager];
 }
 
 - (void)setUpShortcuts {

@@ -22,7 +22,6 @@ typedef NS_ENUM(int, CommandReturn) {
 + (void)printMessage:(NSString *)text;
 + (void)copyToClipboard:(NSString *)text;
 + (CommandReturn)runCommand:(NSString *)command withKeyword:(NSString *)keyword;
-+ (void)saveStringToDesktop:(NSString *)contentString asFile:(NSString *)fileNameString;
 + (void)printHelpMessage;
 
 @end

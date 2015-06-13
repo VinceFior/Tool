@@ -51,6 +51,7 @@
 
 + (void)printHelpMessage {
     NSMutableString *helpMessage = [NSMutableString stringWithFormat:@"Commands:" ];
+    [helpMessage appendString:[NSString stringWithFormat:@"\n\"settings\" or \"config\" to open settings folder"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"gif <keyword>\" to copy the URL of a reaction image, like \"gif nope\""]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"list gif\" to list all reaction images"]];
     [helpMessage appendString:[NSString stringWithFormat:@"\n\"getalbum <album ID>\" to generate a list of reaction images for the given album"]];
@@ -75,6 +76,12 @@
         [CentralTools printHelpMessage];
         return CommandReturnNothing;
         
+    } else if ([command isEqualToString:@"settings"] || [command isEqualToString:@"config"]) {
+        
+        FileManager *fileManager = [FileManager sharedManager];
+        [[NSWorkspace sharedWorkspace] selectFile:fileManager.rootDirectory inFileViewerRootedAtPath:@""];
+        return CommandReturnClose;
+    
     } else if ([command isEqualToString:@"gif"]) {
         
         FileManager *fileManager = [FileManager sharedManager];
@@ -103,18 +110,23 @@
     } else if ([command isEqualToString:@"getalbum"]) {
         
         [CentralTools printMessage:[NSString stringWithFormat:@"Getting album with ID %@..", keyword]];
+
+        NSArray *paths = NSSearchPathForDirectoriesInDomains (NSDesktopDirectory, NSUserDomainMask, YES);
+        NSString *desktopDirectory = [paths objectAtIndex:0];
+        NSString *filenamePath = [NSString stringWithFormat:@"%@/%@", desktopDirectory, @"image-database.txt"];
+
         ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
-        [imgurDelegate storeAlbumWithID:keyword asFilename:@"image-database-new.txt"];
+        [imgurDelegate storeAlbumWithID:keyword toFilePath:filenamePath];
         return CommandReturnNothing;
         
     } else if ([command isEqualToString:@"updatealbum"]) {
         
         FileManager *fileManager = [FileManager sharedManager];
         NSString *imgurAlbumID = fileManager.imgurAlbumID;
-        
         [CentralTools printMessage:[NSString stringWithFormat:@"Updating album (with ID %@)..", imgurAlbumID]];
+        
         ImgurDelegate *imgurDelegate = [ImgurDelegate sharedManager];
-        [imgurDelegate storeAlbumWithID:imgurAlbumID asFilename:@"image-database.txt"];
+        [imgurDelegate storeAlbumWithID:imgurAlbumID toFilePath:fileManager.imageFilePath];
         return CommandReturnNothing;
     
     } else if ([command isEqualToString:@"dict"]) {
@@ -280,21 +292,6 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
-}
-
-+ (void)saveStringToDesktop:(NSString *)contentString asFile:(NSString *)fileNameString {
-    // get the desktop directory:
-    NSArray *paths = NSSearchPathForDirectoriesInDomains
-    (NSDesktopDirectory, NSUserDomainMask, YES);
-    NSString *desktopDirectory = [paths objectAtIndex:0];
-    
-    // make a file name to write the data to using the desktop directory:
-    NSString *fileNamePath = [NSString stringWithFormat:@"%@/%@",
-                          desktopDirectory, fileNameString];
-    
-    //save content to the documents directory
-    [contentString writeToFile:fileNamePath atomically:NO
-                      encoding:NSStringEncodingConversionAllowLossy error:nil];
 }
 
 + (void)openUrlWithString:(NSString *)urlString {

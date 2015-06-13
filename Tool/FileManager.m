@@ -9,6 +9,7 @@
 #import "FileManager.h"
 #import "ReactionImage.h"
 #import "ReactionImageList.h"
+#import "CentralTools.h"
 
 @implementation FileManager
 
@@ -25,11 +26,23 @@
     if (self = [super init]) {
         // load data (only once per shared lifetime)
         
-        1; // TODO: let the user set the root directory
-        NSString *rootDirectory = @"/Users/vincent/Documents/tool/config";
+        NSString *rootDirectory = [@"~/Library/Application Support/Tool" stringByExpandingTildeInPath];
+        self.rootDirectory = rootDirectory;
+        BOOL isRootDirectoryDir = NO;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:rootDirectory isDirectory:&isRootDirectoryDir]) {
+            [CentralTools printMessage:[NSString
+                                        stringWithFormat:@"Root directory does not exist, creating it now at %@",
+                                        rootDirectory]];
+            BOOL createdRoot = [[NSFileManager defaultManager] createDirectoryAtPath:rootDirectory
+                                                         withIntermediateDirectories:YES attributes:nil
+                                                                               error:nil];
+            if (!createdRoot) {
+                [CentralTools printMessage:@"Failed to create root directory."];
+            }
+        }
         
-        2; // TODO: check if files exist (to avoid crashing)
         NSString *imageFilePath = [rootDirectory stringByAppendingString:@"/image-database.txt"];
+        self.imageFilePath = imageFilePath;
         self.imageList = [self getImageList:imageFilePath];
 
         NSString *schoolFilePath = [rootDirectory stringByAppendingString:@"/school-folders.txt"];
@@ -46,11 +59,17 @@
 // Returns a ReactionImageList based on the given file path root.
 // Expects the given imageFile to be a CSV of the form "URL,animated,keywords".
 - (ReactionImageList *) getImageList:(NSString *)imageFileRoot {
-    // TODO: Improve †he flexibility of the input file and actually use CSV stuff.
-    NSMutableArray *images = [[NSMutableArray alloc] init];
+    // Todo: Use JSON instead of a CSV.
+    if (![[NSFileManager defaultManager] fileExistsAtPath:imageFileRoot]) {
+        [CentralTools printMessage:@"Could not find image list file. Creating placeholder now."];
+        NSString *placeholderFileContents = @"http://i.imgur.com/TUJKTDF.jpg,static,I can has cheezburger haz cheeseburger";
+        [placeholderFileContents writeToFile:imageFileRoot atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+    }
     
     NSString* fileContents = [NSString stringWithContentsOfFile:imageFileRoot
                                                        encoding:NSUTF8StringEncoding error:nil];
+    
+    NSMutableArray *images = [[NSMutableArray alloc] init];
     NSArray* lines = [fileContents componentsSeparatedByCharactersInSet:
                       [NSCharacterSet newlineCharacterSet]];
     for (NSString *line in lines) {
@@ -83,6 +102,12 @@
 
 // Set the properties related to school files.
 - (void) setSchoolProperties:(NSString *)schoolFilePath {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:schoolFilePath]) {
+        [CentralTools printMessage:@"Could not find school file. Creating placeholder now."];
+        NSString *documentsPath = [@"~/Documents" stringByExpandingTildeInPath];
+        NSString *placeholderFileContents = [NSString stringWithFormat:@"{\"default\": \"%@\",\n\"classes\": [\n{\"path\": \"FOLDERNAMEHERE\", \"keywords\": [\"KEYWORD1\", \"KEYWORD2\"], \"syllabus\": \"PDFPATHHERE\"}\n]\n}", documentsPath];
+        [placeholderFileContents writeToFile:schoolFilePath atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+    }
     NSData* fileContents = [NSData dataWithContentsOfFile:schoolFilePath];
     NSError *error = nil;
     id object = [NSJSONSerialization JSONObjectWithData:fileContents options:0 error:&error];
@@ -97,6 +122,12 @@
 
 // Sets the properties related to personal settings (per se, not more specific files).
 - (void) setPersonalSettings:(NSString *)personalSettingsFilePath {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:personalSettingsFilePath]) {
+        [CentralTools printMessage:@"Could not find personal settings file. Creating placeholder now."];
+        
+        NSString *placeholderFileContents = @"{\n\"youtube-api-key\": \"KEYHERE\",\n\"youtube-music-playlist-id\": \"PLAYLISTIDHERE\",\n\"imgur-api-client-id\": \"IMGURAPICLIENTIDHERE\",\n\"imgur-album-id\": \"ALBUMIDHERE\"\n}";
+        [placeholderFileContents writeToFile:personalSettingsFilePath atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+    }
     NSData* fileContents = [NSData dataWithContentsOfFile:personalSettingsFilePath];
     NSError *error = nil;
     id object = [NSJSONSerialization JSONObjectWithData:fileContents options:0 error:&error];
@@ -108,6 +139,10 @@
     self.youTubeMusicPlaylistID = object[@"youtube-music-playlist-id"];
     self.imgurAPIClientID = object[@"imgur-api-client-id"];
     self.imgurAlbumID = object[@"imgur-album-id"];
+}
+
+- (void) updateImageList {
+    self.imageList = [self getImageList:self.imageFilePath];
 }
 
 @end

@@ -14,6 +14,6 @@
 @property (copy) void(^continueHandler)();
 
 + (id)sharedManager;
-- (void)storeAlbumWithID:(NSString *)albumID asFilename:(NSString *)fileName;
+- (void)storeAlbumWithID:(NSString *)albumID toFilePath:(NSString *)fileName;
 
 @end
