@@ -265,7 +265,8 @@
                     hasOpened = YES;
                     NSDictionary *resourceID = snippet[@"resourceId"];
                     NSString *videoID = resourceID[@"videoId"];
-                    NSString *videoURLString = [NSString stringWithFormat:@"https://www.youtube.com/watch?v=%@", videoID];
+                    NSString *videoURLString = [NSString stringWithFormat:@"https://www.youtube.com/watch?list=%@&v=%@",
+                                                playlistID, videoID];
                     [CentralTools openUrlWithString:videoURLString];
                     [CentralTools printMessage:[NSString stringWithFormat:@"Opening video \"%@\".", title]];
                 } else {
@@ -278,7 +279,7 @@
         if (nextPageToken) {
             // we have more results
             [CentralTools getYoutubeMusicVideoForPlaylist:playlistID withKeyword:keyword withAPIKey:apiKey withPageToken:nextPageToken shouldOpen:!hasOpened];
-        } else if (!hasOpened) {
+        } else if (!hasOpened && shouldOpen) {
             // we can't find the song in this playlist
             NSString *failureMessage = [NSString stringWithFormat:@"Could not find video with keyword \"%@\" in playlist with ID \"%@\".",
                                         keyword, playlistID];
